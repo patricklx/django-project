@@ -18,4 +18,6 @@ from django.contrib import admin
 
 
 urlpatterns = [
+    url(r'^chart/', include('chart.urls')),
+    url(r'^api-v1/', include('apiv1.urls'))
 ]
