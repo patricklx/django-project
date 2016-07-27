@@ -13,7 +13,6 @@ class WeatherAPITests(APITestCase):
         content = response.data
         self.assertTrue('data' in content)
         self.assertTrue('city' in content['data'])
-        self.assertTrue('city' in content['data'])
         self.assertTrue('min' in content['data'])
         self.assertTrue('max' in content['data'])
         self.assertTrue('average' in content['data'])
