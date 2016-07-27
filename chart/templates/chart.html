@@ -1,0 +1,81 @@
+<html>
+<head>
+    <title>Weather Chart</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
+</head>
+<body>
+
+<div>
+    <canvas id="myChart" width="400" height="400"></canvas>
+    <form>
+        <fieldset>
+            <label>City</label>
+            <input name="city" id="city">
+
+            <label>Days</label>
+            <input type="number" name="days" id="days">
+        </fieldset>
+        <button id="btn-show">show</button>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    $('#btn-show').click(function (evt) {
+        var city, period;
+        evt.preventDefault();
+        city = $('#city').val();
+        period = $('#days').val();
+        var promise = getData(city, period);
+        promise.then(function (data) {
+            data = data['data'];
+            showChart([data.min, data.max, data.average, data.median])
+        });
+    });
+
+    function showChart(data) {
+        var ctx = $("#myChart");
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['min', 'max', 'average', 'median'],
+                datasets: [{
+                    label: 'ºC',
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1,
+                    data: data
+                }]
+            },
+            options: {
+                responsive: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
+    function getData(city, period) {
+        return $.ajax({
+            url: "{% url 'weather' %}?city=" + city + '&period=' + period
+        });
+    }
+</script>
+</body>
+</html>
